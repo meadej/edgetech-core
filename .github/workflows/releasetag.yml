@@ -22,8 +22,16 @@ jobs:
 
       - name: Checkout Ref
         uses: actions/checkout@v3
-        with:
-          ref: '${{ env.GITHUB_SHA }}'
+
+      - name: Sparse Checkout Setup
+        run: |
+          git sparse-checkout init --cone
+          echo "!.github" >> .git/info/sparse-checkout
+
+      - name: Checkout Old Commit
+        run: |
+          git checkout ${{ env.GITHUB_SHA }}  # Replace with the desired commit SHA
+
 
       - name: Build Images
         env: 

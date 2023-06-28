@@ -20,17 +20,15 @@ jobs:
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Checkout Ref
-        uses: actions/checkout@v3
-
       - name: Sparse Checkout Setup
         run: |
           git sparse-checkout init --cone
-          echo "!.github" >> .git/info/sparse-checkout
+          git config core.sparsecheckout true
+          echo "!.github/*" >> .git/info/sparse-checkout
 
       - name: Checkout Old Commit
         run: |
-          git checkout ${{ env.GITHUB_SHA }}  # Replace with the desired commit SHA
+          git checkout "${{ env.GITHUB_SHA }}"
 
 
       - name: Build Images
